@@ -72,10 +72,6 @@ string compressData(const string& data) {
         compressedText << huffmanCodes[ch];
     }
 
-    ofstream compressedFile("compressed_text.txt");
-    compressedFile << compressedText.str();
-    compressedFile.close();
-
     ofstream dictFile("dict.txt");
     for (const auto& pair : huffmanCodes) {
         dictFile << "Symbol - " << pair.first << " :: Code - " << pair.second << "\n";
@@ -83,44 +79,4 @@ string compressData(const string& data) {
     dictFile.close();
 
     return compressedText.str();
-}
-
-// Главная функция
-int main() {
-    setlocale(LC_ALL, "English");
-
-    int choice;
-    cout << "Enter 1 to enter text manually, 2 to load from a file: ";
-    cin >> choice;
-    cin.ignore();
-
-    if (choice == 1) {
-        cout << "Enter the text to compress: ";
-        string text;
-        getline(cin, text);
-        compressData(text);
-        cout << "Data saved to file compressed_text.txt" << endl;
-        cout << "Dictionary saved to file dict.txt" << endl;
-    } else if (choice == 2) {
-        cout << "Specify the path to the file to load text: ";
-        string filePath;
-        getline(cin, filePath);
-        ifstream file(filePath);
-        if (!file.is_open()) {
-            cerr << "File '" << filePath << "' not found." << endl;
-            return 1;
-        }
-        stringstream buffer;
-        buffer << file.rdbuf();
-        string text = buffer.str();
-        file.close();
-        compressData(text);
-        cout << "Data saved to file compressed_text.txt" << endl;
-        cout << "Dictionary saved to file dict.txt" << endl;
-    } else {
-        cerr << "Invalid option selected." << endl;
-        return 1;
-    }
-
-    return 0;
 }

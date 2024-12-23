@@ -87,14 +87,3 @@ void LZ78Compressor::decompress(const std::string& compressed_filename, const st
     decompressed_file << decompressed_data;
     decompressed_file.close();
 }
-/*#include <iostream>
-#include "LZ78Compressor.h"
-
-int main() {
-    // Создаем объект класса LZ78Compressor и вызываем метод обработки
-    LZ78Compressor compressor;
-    compressor.processCompressionAndDecompression("input.txt", "compressed_output.txt", "decompressed_output.txt");
-
-    return 0;
-*/
-

@@ -12,17 +12,17 @@
 
 class LZ78Compressor {
 public:
-    // Конструктор и деструктор
+    // ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЁ Г¤ГҐГ±ГІГ°ГіГЄГІГ®Г°
     LZ78Compressor();
     ~LZ78Compressor();
 
-    // Основной метод для сжатия и восстановления данных
+    // ГЋГ±Г­Г®ГўГ­Г®Г© Г¬ГҐГІГ®Г¤ Г¤Г«Гї Г±Г¦Г ГІГЁГї ГЁ ГўГ®Г±Г±ГІГ Г­Г®ГўГ«ГҐГ­ГЁГї Г¤Г Г­Г­Г»Гµ
     void processCompressionAndDecompression(const std::string& input_filename,
         const std::string& compressed_filename,
         const std::string& decompressed_filename);
 
 private:
-    // Вспомогательные методы для сжатия и восстановления
+    // Г‚Г±ГЇГ®Г¬Г®ГЈГ ГІГҐГ«ГјГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г» Г¤Г«Гї Г±Г¦Г ГІГЁГї ГЁ ГўГ®Г±Г±ГІГ Г­Г®ГўГ«ГҐГ­ГЁГї
     void compress(const std::string& message, const std::string& compressed_filename);
     void decompress(const std::string& compressed_filename, const std::string& decompressed_filename);
 };

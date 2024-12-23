@@ -139,12 +139,3 @@ public:
         return output;
     }
 };
-
-int main()
-{
-    LZW lzw;
-    string line = "";
-    pair<string, map<string, string>> p = lzw.compression(line);
-    cout << (lzw.decompression(p.first, p.second) == line);
-    
-}

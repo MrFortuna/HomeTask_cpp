@@ -84,7 +84,7 @@ pair<map<long double, string>, string> code_to_arithmetic(string a) {
             break;
         }
     }
-    cout << itog << " - coded text" << setprecision(numeric_limits<long double>::max_digits10) << endl;
+    //cout << itog << " - coded text" << setprecision(numeric_limits<long double>::max_digits10) << endl;
 
     return make_pair(key, itog); // Возвращаем карту и закодированный текст
 }
@@ -133,12 +133,26 @@ string decode_from_arithmetic (map<long double, string> keys, string a) {
             ////cout << "-------" << endl;
             }
             else {
-                cout << decoded <<endl;
+                //cout << decoded <<endl;
                 return decoded;
                 
             }
         }
     }
-    cout << "Decoded text: "<<decoded <<endl;
+    //cout << "Decoded text: "<<decoded <<endl;
     return decoded;
 }
+/*
+int main() {
+
+    string a = "abaabaaca";
+
+    auto coded_a =  code_to_arithmetic(a); 
+
+    cout << coded_a.second << endl;
+    
+    cout << decode_from_arithmetic(coded_a.first, coded_a.second);
+
+    return 0;
+}
+*/

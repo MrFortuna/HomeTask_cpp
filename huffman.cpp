@@ -1,94 +1,126 @@
-﻿#include "Huffman.h"
+#include "huffman.h"
 #include <iostream>
-#include <unordered_map>
-#include <queue>
-#include <functional>
+#include <fstream>
+#include <sstream>
+#include <string>
 
-namespace Huffman {
-    // Узел дерева Хаффмана
-    struct Node {
-        char ch;
-        int freq;
-        Node* left;
-        Node* right;
+using namespace std;
 
-        Node(char character, int frequency, Node* l = nullptr, Node* r = nullptr)
-            : ch(character), freq(frequency), left(l), right(r) {}
-    };
+// Конструктор узла дерева
+Node::Node(char ch, double prob) : character(ch), probability(prob), left(nullptr), right(nullptr) {}
 
-    // Компаратор для очереди с приоритетами
-    struct comp {
-        bool operator()(Node* l, Node* r) {
-            return l->freq > r->freq;
-        }
-    };
+// Оператор сравнения для очереди с приоритетом
+bool CompareNode::operator()(Node* lhs, Node* rhs) {
+    return lhs->probability > rhs->probability;
+}
 
-    void run(const std::string& text) {
-        // Подсчёт частоты каждого символа
-        std::unordered_map<char, int> freq;
-        for (char ch : text) {
-            freq[ch]++;
-        }
-
-        // Очередь с приоритетами для построения дерева Хаффмана
-        std::priority_queue<Node*, std::vector<Node*>, comp> pq;
-        for (const auto& pair : freq) {
-            pq.push(new Node(pair.first, pair.second));
-        }
-
-        // Построение дерева Хаффмана
-        while (pq.size() > 1) {
-            Node* left = pq.top(); pq.pop();
-            Node* right = pq.top(); pq.pop();
-            int sum = left->freq + right->freq;
-            pq.push(new Node('\0', sum, left, right));
-        }
-        Node* root = pq.top();
-
-        // Построение таблицы кодов Хаффмана
-        std::unordered_map<char, std::string> huffmanCode;
-        std::function<void(Node*, std::string)> encode = [&](Node* node, std::string str) {
-            if (!node) return;
-            if (!node->left && !node->right) {
-                huffmanCode[node->ch] = str;
-            }
-            encode(node->left, str + "0");
-            encode(node->right, str + "1");
-            };
-        encode(root, "");
-
-        // Вывод кодов Хаффмана
-        std::cout << "Huffman Codes are:\n";
-        for (const auto& pair : huffmanCode) {
-            std::cout << pair.first << ": " << pair.second << "\n";
-        }
-
-        // Кодирование строки
-        std::string encoded = "";
-        for (char ch : text) {
-            encoded += huffmanCode[ch];
-        }
-        std::cout << "\nEncoded string is:\n" << encoded << "\n";
-
-        // Декодирование строки
-        std::string decoded = "";
-        Node* current = root;
-        for (char bit : encoded) {
-            current = (bit == '0') ? current->left : current->right;
-            if (!current->left && !current->right) {
-                decoded += current->ch;
-                current = root;
-            }
-        }
-        std::cout << "\nDecoded string is:\n" << decoded << "\n";
-
-        // Очистка памяти
-        std::function<void(Node*)> freeTree = [&](Node* node) {
-            if (!node) return;
-            freeTree(node->left);
-            freeTree(node->right);
-            delete node;
-            };
-        freeTree(root);
+// Построение дерева Хаффмана
+void buildHuffmanTree(vector<Node*>& nodes) {
+    priority_queue<Node*, vector<Node*>, CompareNode> minHeap;
+    for (auto node : nodes) {
+        minHeap.push(node);
     }
+
+    while (minHeap.size() > 1) {
+        Node* left = minHeap.top(); minHeap.pop();
+        Node* right = minHeap.top(); minHeap.pop();
+
+        Node* internalNode = new Node('\0', left->probability + right->probability);
+        internalNode->left = left;
+        internalNode->right = right;
+
+        minHeap.push(internalNode);
+    }
+
+    Node* root = minHeap.top();
+
+    function<void(Node*, string)> generateCodes = [&](Node* node, string currentCode) {
+        if (!node) return;
+        if (node->character != '\0') {
+            node->code = currentCode;
+        }
+        generateCodes(node->left, currentCode + "0");
+        generateCodes(node->right, currentCode + "1");
+    };
+
+    generateCodes(root, "");
+}
+
+// Сжатие данных с использованием кодирования Хаффмана
+string compressData(const string& data) {
+    unordered_map<char, int> frequency;
+    for (char ch : data) {
+        frequency[ch]++;
+    }
+
+    vector<Node*> nodes;
+    for (const auto& pair : frequency) {
+        nodes.push_back(new Node(pair.first, static_cast<double>(pair.second) / data.size()));
+    }
+
+    buildHuffmanTree(nodes);
+
+    unordered_map<char, string> huffmanCodes;
+    for (auto node : nodes) {
+        if (node->character != '\0') {
+            huffmanCodes[node->character] = node->code;
+        }
+    }
+
+    stringstream compressedText;
+    for (char ch : data) {
+        compressedText << huffmanCodes[ch];
+    }
+
+    ofstream compressedFile("compressed_text.txt");
+    compressedFile << compressedText.str();
+    compressedFile.close();
+
+    ofstream dictFile("dict.txt");
+    for (const auto& pair : huffmanCodes) {
+        dictFile << "Symbol - " << pair.first << " :: Code - " << pair.second << "\n";
+    }
+    dictFile.close();
+
+    return compressedText.str();
+}
+
+// Главная функция
+int main() {
+    setlocale(LC_ALL, "English");
+
+    int choice;
+    cout << "Enter 1 to enter text manually, 2 to load from a file: ";
+    cin >> choice;
+    cin.ignore();
+
+    if (choice == 1) {
+        cout << "Enter the text to compress: ";
+        string text;
+        getline(cin, text);
+        compressData(text);
+        cout << "Data saved to file compressed_text.txt" << endl;
+        cout << "Dictionary saved to file dict.txt" << endl;
+    } else if (choice == 2) {
+        cout << "Specify the path to the file to load text: ";
+        string filePath;
+        getline(cin, filePath);
+        ifstream file(filePath);
+        if (!file.is_open()) {
+            cerr << "File '" << filePath << "' not found." << endl;
+            return 1;
+        }
+        stringstream buffer;
+        buffer << file.rdbuf();
+        string text = buffer.str();
+        file.close();
+        compressData(text);
+        cout << "Data saved to file compressed_text.txt" << endl;
+        cout << "Dictionary saved to file dict.txt" << endl;
+    } else {
+        cerr << "Invalid option selected." << endl;
+        return 1;
+    }
+
+    return 0;
 }

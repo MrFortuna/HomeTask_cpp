@@ -3,16 +3,6 @@
 #include <sstream>
 #include <fstream>
 
-void writeStringToFile(const std::string& str, const std::string& filename) {
-    std::ofstream outFile;
-    if (!outFile.is_open()) {
-        std::cerr << "Не удалось открыть файл " << filename << " для записи." << std::endl;
-        return;
-    }
-
-    outFile << str;
-    outFile.close();
-}
 std::string encodeRLE(const std::string& input) {
     setlocale(LC_ALL, "Russian");
     if (input.empty()) return "";
@@ -33,8 +23,6 @@ std::string encodeRLE(const std::string& input) {
     }
 
     result += std::to_string(count) + currentChar;
-    std::string filename = "encode.txt";
-    writeStringToFile(result, filename);
     return result;
 }
 
@@ -59,7 +47,5 @@ std::string decodeRLE(const std::string& input) {
 
         index += numLength + 1;
     }
-    std::string filename = "decode.txt";
-    writeStringToFile(result, filename);
     return result;
 }

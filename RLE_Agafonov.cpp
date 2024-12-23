@@ -3,6 +3,7 @@
 #include <sstream>
 
 std::string encodeRLE(const std::string& input) {
+    setlocale(LC_ALL, "Russian");
     if (input.empty()) return "";
 
     std::string result;
@@ -26,6 +27,7 @@ std::string encodeRLE(const std::string& input) {
 }
 
 std::string decodeRLE(const std::string& input) {
+    setlocale(LC_ALL, "Russian");
     if (input.empty()) return "";
 
     std::string result;

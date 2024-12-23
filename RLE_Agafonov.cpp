@@ -1,8 +1,10 @@
-﻿#include "RLE_Agafonov.h"
+#include "RLE_Agafonov.h"
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 std::string encodeRLE(const std::string& input) {
+    setlocale(LC_ALL, "Russian");
     if (input.empty()) return "";
 
     std::string result;
@@ -21,11 +23,11 @@ std::string encodeRLE(const std::string& input) {
     }
 
     result += std::to_string(count) + currentChar;
-
     return result;
 }
 
 std::string decodeRLE(const std::string& input) {
+    setlocale(LC_ALL, "Russian");
     if (input.empty()) return "";
 
     std::string result;
@@ -45,6 +47,5 @@ std::string decodeRLE(const std::string& input) {
 
         index += numLength + 1;
     }
-
     return result;
 }

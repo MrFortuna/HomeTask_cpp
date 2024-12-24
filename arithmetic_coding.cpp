@@ -99,8 +99,8 @@ string decode_from_arithmetic (map<long double, string> keys, string a) {
     bool flag = true;
     pair<long double, string> prepairz = {0.0, "-"}; 
     int i = 0;
-    while(flag) {
-    //for (int i = 0; i < 10; i++) {
+    //while(flag) {
+    for (int i = 0; i < 100000; i++) {
         prepairz = {0.0, "-"}; 
         for (const auto& pairz : keys) {
             if (flag) {
@@ -126,7 +126,7 @@ string decode_from_arithmetic (map<long double, string> keys, string a) {
                 }
                 else {
                     decoded.append(pairz.second);
-                    flag = false;
+                    //flag = false;
                     break;
                 }
             }
@@ -146,12 +146,14 @@ string decode_from_arithmetic (map<long double, string> keys, string a) {
 /*
 int main() {
 
-    string a = "abaabaaca";
+    string a = "hey you its text";
 
     auto coded_a =  code_to_arithmetic(a); 
 
     cout << coded_a.second << endl;
-    
+    for (auto& a: coded_a.first) {
+        cout << a.second << " --- " << a.first << endl;
+    }
     cout << decode_from_arithmetic(coded_a.first, coded_a.second);
 
     return 0;

@@ -99,8 +99,8 @@ string decode_from_arithmetic (map<long double, string> keys, string a) {
     bool flag = true;
     pair<long double, string> prepairz = {0.0, "-"}; 
     int i = 0;
-    //while(flag) {
-    for (int i = 0; i < 10; i++) {
+    while(flag) {
+    //for (int i = 0; i < 10; i++) {
         prepairz = {0.0, "-"}; 
         for (const auto& pairz : keys) {
             if (flag) {
@@ -126,6 +126,7 @@ string decode_from_arithmetic (map<long double, string> keys, string a) {
                 }
                 else {
                     decoded.append(pairz.second);
+                    flag = false;
                     break;
                 }
             }
